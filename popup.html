@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Claude Usage</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{width:300px;min-height:180px;background:#fff;font-family:'Space Grotesk',system-ui,sans-serif;color:#111;overflow:hidden;}
+  .grid-bg{position:fixed;inset:0;background-image:linear-gradient(#E8E8E8 1px,transparent 1px),linear-gradient(90deg,#E8E8E8 1px,transparent 1px);background-size:28px 28px;opacity:0.35;pointer-events:none;z-index:0;}
+  .wrap{position:relative;z-index:1;}
+
+  /* header */
+  .hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 14px 11px;border-bottom:0.5px solid #ECECEC;}
+  .logo-row{display:flex;align-items:center;gap:8px;}
+  .brand{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#111;}
+  .brand span{color:#F26522;}
+  .hdr-right{display:flex;align-items:center;gap:7px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:#CCC;transition:background .3s;}
+  .dot-ok{background:#4CAF50;} .dot-err{background:#E24B4A;}
+  .refresh{width:26px;height:26px;border-radius:50%;border:0.5px solid #E0E0E0;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#888;transition:all .15s;}
+  .refresh:hover{color:#F26522;border-color:#F26522;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .spinning svg{animation:spin .8s linear infinite;}
+
+  /* body */
+  .body{padding:13px 14px 10px;}
+
+  /* shimmer */
+  .shimmer{height:8px;border-radius:8px;background:linear-gradient(90deg,#F0F0EE 25%,#E4E4E0 50%,#F0F0EE 75%);background-size:200% 100%;animation:sh 1.2s infinite;margin-bottom:14px;}
+  .shimmer.tall{height:13px;width:55%;}
+  @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+  /* state */
+  .state-box{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:20px 0 14px;}
+  .state-title{font-size:13px;font-weight:600;color:#111;}
+  .state-sub{font-size:11px;color:#888;line-height:1.55;max-width:220px;}
+  .cta-btn{background:#F26522;color:white;border:none;padding:6px 16px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;margin-top:2px;transition:opacity .15s;}
+  .cta-btn:hover{opacity:.88;}
+
+  /* eyebrow */
+  .eyebrow{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#F26522;font-weight:600;margin-bottom:10px;}
+
+  /* usage row */
+  .usage-row{margin-bottom:13px;}
+  .row-meta{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
+  .row-label{font-size:12px;font-weight:600;color:#333;}
+  .row-pct{font-size:15px;font-weight:700;line-height:1;color:#F26522;}
+  .row-pct.mid{color:#F5A623;} .row-pct.warn{color:#E24B4A;}
+  .bar-track{height:7px;background:#F1EFE8;border-radius:8px;overflow:hidden;}
+  .bar-fill{height:7px;border-radius:8px;background:#F26522;transition:width .5s ease;}
+  .bar-fill.mid{background:#F5A623;} .bar-fill.warn{background:#E24B4A;}
+  .row-reset{font-size:10px;color:#BBB;margin-top:3px;}
+  .row-reset span{color:#999;}
+
+  .divider{height:0.5px;background:#ECECEC;margin:10px 0;}
+
+  /* inactive */
+  .null-row{display:flex;align-items:center;justify-content:space-between;padding:7px 9px;background:#F9F9F7;border:0.5px solid #EBEBEB;border-radius:7px;margin-bottom:8px;}
+  .null-label{font-size:11px;color:#BBB;font-weight:500;}
+  .null-badge{font-size:9px;color:#CCC;background:#EFEFED;padding:2px 7px;border-radius:20px;font-weight:600;letter-spacing:.5px;}
+
+  /* raw json fallback */
+  .raw-json{font-family:monospace;font-size:10px;color:#555;background:#F5F5F3;border-radius:8px;padding:10px;max-height:200px;overflow:auto;white-space:pre-wrap;word-break:break-all;}
+
+  /* footer */
+  .footer{border-top:0.5px solid #ECECEC;padding:7px 14px;display:flex;justify-content:space-between;align-items:center;}
+  .footer-time{font-size:9px;color:#CCC;letter-spacing:.3px;}
+  .footer-brand{font-size:9px;color:#CCC;letter-spacing:1px;text-transform:uppercase;}
+  .footer-brand span{color:#F26522;}
+</style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="wrap">
+    <div class="hdr">
+      <div class="logo-row">
+        <svg width="16" height="16" viewBox="0 0 48 48" fill="none">
+          <line x1="24" y1="4" x2="24" y2="44" stroke="#F26522" stroke-width="5" stroke-linecap="round"/>
+          <line x1="4" y1="24" x2="44" y2="24" stroke="#F26522" stroke-width="5" stroke-linecap="round"/>
+          <line x1="9" y1="9" x2="39" y2="39" stroke="#F26522" stroke-width="5" stroke-linecap="round"/>
+          <line x1="39" y1="9" x2="9" y2="39" stroke="#F26522" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+        <div class="brand">VIKKI<span>VERSE</span></div>
+      </div>
+      <div class="hdr-right">
+        <div class="dot" id="statusDot"></div>
+        <button class="refresh" id="refreshBtn" title="Refresh">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="body" id="body-content"></div>
+    <div class="footer">
+      <div class="footer-time" id="footerTime">—</div>
+      <div class="footer-brand">CLAUDE <span>USAGE</span></div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
